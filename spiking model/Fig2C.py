@@ -1,7 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set(font_scale=3)
+sns.set_context("notebook", font_scale=2)
+plt.rcParams.update({
+    'font.size': 13,           # Base font size
+    'axes.titlesize': 13,      # Title
+    'axes.labelsize': 13,      # X/Y labels
+    'xtick.labelsize': 13,     # X tick labels
+    'ytick.labelsize': 13,     # Y tick labels
+    'legend.fontsize': 13,     # Legend
+})
 sns.set_style("ticks")
 
 tau_AMPA	=2		# time constant of AMPA channel closing in ms
@@ -130,19 +138,19 @@ x = [0.5, 0.5, 0.007, 0.014, 17.2, 0., 0.38, 48,    5.5, 0.54,  1., 8.6,  5.2, 2
 V_s_Record, V_d_Record, SpikeRecord, ExcInput, raterecord = MultiDen(x)
 
 
-plt.rcParams["figure.figsize"] = (25,14)
+plt.rcParams["figure.figsize"] = (8,5)
 
 fig, (a0, a1, a2) = plt.subplots(3, 1, sharex=True, height_ratios=[1, 3, 1])
 
-a0.plot(np.arange(0, times*NoOfDendrites)*dt, raterecord[times:])
+a0.plot(np.arange(0, times*NoOfDendrites)*dt, raterecord[times:], 'black', linewidth = 2)
 a0.set_xlim(left=0, right=times*NoOfDendrites*dt)
 a0.set_ylim(bottom=0, top=70)
 
-a1.plot(np.arange(0, times*NoOfDendrites)*dt, np.transpose(V_d_Record[:,times:]))
+a1.plot(np.arange(0, times*NoOfDendrites)*dt, np.transpose(V_d_Record[:,times:]), linewidth = 2)
 a1.set_xlim(left=0, right=times*NoOfDendrites*dt)
 a1.set_ylim(bottom=-85, top=0)
 
-a2.plot(np.arange(0, times*NoOfDendrites)*dt, V_s_Record[times:])
+a2.plot(np.arange(0, times*NoOfDendrites)*dt, V_s_Record[times:],'black', linewidth = 1, alpha = 0.6 )
 a2.set_xlim(left=0, right=times*NoOfDendrites*dt)
 a2.set_ylim(bottom=-85, top=45)
 

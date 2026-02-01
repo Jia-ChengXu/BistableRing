@@ -10,10 +10,17 @@ import timeit
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.optimize import curve_fit
-
+sns.set_context("notebook", font_scale=2)
+plt.rcParams.update({
+    'font.size': 13,           # Base font size
+    'axes.titlesize': 13,      # Title
+    'axes.labelsize': 13,      # X/Y labels
+    'xtick.labelsize': 13,     # X tick labels
+    'ytick.labelsize': 13,     # Y tick labels
+    'legend.fontsize': 13,     # Legend
+})
+plt.rcParams["figure.figsize"] = (4,2.75)
 start = timeit.default_timer()
-sns.set(font_scale=2)
 sns.set_style("ticks")
 
 def OneTimeStep(SynActi,state,Vden,VTotal,Rate, Noise):
@@ -124,41 +131,67 @@ for ss in range(condition):
             
             #if determine memory amp by taking largest N firing rate
             FitAll[0, ss, t,trial] = np.mean( np.sort(Rate)[350:] ) 
-            FitAll[2, ss, t,trial] = np.sum( Rate * x )/np.sum(Rate)
+            RateNorm = Rate - 2.5
+            RateNorm[RateNorm<0] = 0 
+            FitAll[2, ss, t,trial] = np.sum( RateNorm * x )/np.sum(RateNorm)
 
 
-#plt.rcParams["figure.figsize"] = (8,2.5)
-for s in range(ss): 
+#colors = ['blue', 'orange','orange']
+for ss in range(condition): 
     plt.figure('Amp')
-    plt.plot(np.arange(0, DelayTime, 1),  FitAll[0, ss, :,:], '-', alpha = 1)
+    plt.plot(np.arange(0, DelayTime-300, 1),  FitAll[0, ss, 300:,:], '-', alpha = 1)
     plt.xlabel('Time (ms)')
-    plt.ylabel('Memory Amplitude')
-    plt.gca().set_xlim([0,DelayTime])
+    plt.ylabel('Memory amplitude')
+    plt.gca().set_xlim([0,DelayTime-300])
     plt.gca().set_ylim([0,22])
     sns.despine()
 
     plt.figure('Location')
-    plt.plot(np.arange(0, DelayTime, 1),  np.var(FitAll[2, ss, :,:], axis=1), '-', alpha =1)
+    plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, ss, 300:,:], axis=1), '-', alpha =1)
     plt.xlabel('Time (ms)')
-    plt.ylabel('Location Variance')
-    plt.gca().set_xlim([0,DelayTime])
-    plt.gca().set_ylim([0,50])
+    plt.ylabel('Location variance')
+    plt.gca().set_xlim([0,DelayTime-300])
+    plt.gca().set_ylim([0,53])
     sns.despine()
+
     
-    
-plt.rcParams["figure.figsize"] = (8,5.5)
+plt.rcParams["figure.figsize"] = (3.25,2.75)
 
 plt.figure('Range')
-plt.plot(BiRange,  np.var(FitAll[2, :, -1,:], axis=1)  , 'o', alpha =1)
-plt.xlabel('Bistable Range')
-plt.ylabel('Final location Variance')
+plt.plot(BiRange,  np.var(FitAll[2, :, -1,:], axis=1)  , '.', color = 'black', alpha =1, clip_on=False, zorder=3)
+plt.plot(BiRange[0],  np.var(FitAll[2, :, -1,:], axis=1)[0]  , '.', color = 'blue', alpha =1, clip_on=False, zorder=3)
+plt.plot(BiRange[3],  np.var(FitAll[2, :, -1,:], axis=1)[3]  , '.', color = 'orange', alpha =1, clip_on=False, zorder=3)
+plt.plot(BiRange[6],  np.var(FitAll[2, :, -1,:], axis=1)[6]  , '.', color = 'green', alpha =1, clip_on=False, zorder=3)
+
+
+
+plt.xlabel('Bistable range')
+plt.ylabel('Final location variance')
 plt.gca().set_xlim([0,np.max(BiRange)+0.1])
-plt.gca().set_ylim([0,50])
+plt.gca().set_ylim([0,53])
 sns.despine()
+plt.show()
+
+plt.rcParams["figure.figsize"] = (4,2.75)
 
 stop = timeit.default_timer()
 print('Time: ', stop - start)
 
-plt.show()
+
 import os
 os.system('say "program finished"')
+
+
+
+colors = ['blue', 'orange','green']
+for ss in range(3): 
+
+    plt.figure(4)
+    plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, ss*3, 300:,:], axis=1), '-', color = colors[ss], alpha =1)
+    plt.xlabel('Time (ms)')
+    plt.ylabel('Location variance')
+    plt.gca().set_xlim([0,DelayTime-300])
+    plt.gca().set_ylim([0,53])
+    sns.despine()
+
+plt.show()

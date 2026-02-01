@@ -3,6 +3,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 sns.set(font_scale=2)
+plt.rcParams.update({
+    'font.size': 13,           # Base font size
+    'axes.titlesize': 13,      # Title
+    'axes.labelsize': 13,      # X/Y labels
+    'xtick.labelsize': 13,     # X tick labels
+    'ytick.labelsize': 13,     # Y tick labels
+    'legend.fontsize': 13,     # Legend
+})
+plt.rcParams["figure.figsize"] = (3.2,2.5)
 sns.set_style("ticks")
 
 Tu = 9
@@ -46,10 +55,10 @@ for it in range(3):
     
     #each multistable band
     plt.figure(it)
-    plt.plot(TuEff, label*beta, linewidth = 5, color = 'black') #label*beta makes y dendritic rate
-    plt.plot(TdEff, label*beta, linewidth = 5, color = 'black')
+    plt.plot(TuEff, label*beta, linewidth = 2, color = 'black') #label*beta makes y dendritic rate
+    plt.plot(TdEff, label*beta, linewidth = 2, color = 'black')
     axes = plt.gca()
-    axes.set_xlim([0,50])
+    axes.set_xlim([0,45])
     axes.set_ylim([0,35])
     axes.set_aspect('equal')
     sns.despine()
@@ -57,7 +66,7 @@ for it in range(3):
     #input memory curve
     colorlist = ['blue', 'magenta', 'purple']
     plt.figure(100)
-    plt.plot(Input, Memory*beta, linewidth = 3, color = colorlist[it])
+    plt.plot(Input, Memory*beta, linewidth = 2, color = colorlist[it], zorder=10)
     axes = plt.gca()
     axes.set_xlim([0,I])
     axes.set_ylim([0,51])

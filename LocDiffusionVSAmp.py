@@ -67,7 +67,7 @@ for xx in range(len(x)):
     dist = np.minimum( abs(x[xx]-z), 360-abs(x[xx]-z)  )
     weight[ xx, :] = 18/(( dist+2)**2)
 
-Simulations = 4
+Simulations = 400
 condition = 3
 TotalTime = EncodingTime + DelayTime
 
@@ -79,11 +79,11 @@ NoiseStdList = []
 
 for ss in range(condition):
     #changing AMP case
-    Tu  = 4
-    Td  = 1
-    ampinc = [8, 15, 30]
+    Tu  = 4.4
+    Td  = 1.6
+    ampinc = [3, 8, 16]
     A2  = ampinc[ss]
-    NoiseStd = 15
+    NoiseStd = 10
     
 
     
@@ -111,7 +111,9 @@ for ss in range(condition):
             #DriftingMatrix[:, t+EncodingTime, trial, ss] = Rate
             #if determine memory amp by taking largest N firing rate
             FitAll[0, ss, t,trial] = np.mean( np.sort(Rate)[350:] ) 
-            FitAll[2, ss, t,trial] = np.sum( Rate * x )/np.sum(Rate)
+            RateNorm = Rate - 2.5
+            RateNorm[RateNorm<0] = 0 
+            FitAll[2, ss, t,trial] = np.sum( RateNorm * x )/np.sum(RateNorm)
 
         
         plt.figure(333)
@@ -121,23 +123,26 @@ for ss in range(condition):
 #=========================================================================
 clist = ['lightgrey', 'grey', 'black']
 #plt.rcParams["figure.figsize"] = (8,2.5)
-for ss in range(condition): 
-    plt.figure('Amp')
-    plt.plot(np.arange(0, DelayTime, 1),  FitAll[0, ss, :,:], '-', color = clist[ss], alpha = 1)
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Memory Amplitude')
-    plt.gca().set_xlim([0,DelayTime])
-    plt.gca().set_ylim([0,22])
-    sns.despine()
+plt.figure('Amp')
+plt.plot(np.arange(0, DelayTime-300, 1),  FitAll[0, 0, 300:,:], '-', color = clist[0], alpha = 1)
+plt.plot(np.arange(0, DelayTime-300, 1),  FitAll[0, 1, 300:,:], '-', color = clist[1], alpha = 1)
+plt.plot(np.arange(0, DelayTime-300, 1),  FitAll[0, 2, 300:,:], '-', color = clist[2], alpha = 1)
+plt.xlabel('Time (ms)')
+plt.ylabel('Memory Amplitude')
+plt.gca().set_xlim([0,DelayTime-300])
+plt.gca().set_ylim([0,22])
+sns.despine()
 
-    plt.figure('Location')
-    plt.plot(np.arange(0, DelayTime, 1),  np.var(FitAll[2, ss, :,:], axis=1), '-', color = clist[ss], alpha =1)
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Location Variance')
-    plt.gca().set_xlim([0,DelayTime])
-    plt.gca().set_ylim([0,7])
-    sns.despine()
-    
+plt.figure('Location')
+plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, 0, 300:,:], axis=1)-np.min(np.var(FitAll[2, 0, 300:,:], axis=1)) + np.min(np.var(FitAll[2, 2, 300:,:], axis=1)), '-', color = clist[0], alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, 1, 300:,:], axis=1)-np.min(np.var(FitAll[2, 1, 300:,:], axis=1)) + np.min(np.var(FitAll[2, 2, 300:,:], axis=1)), '-', color = clist[1], alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, 2, 300:,:], axis=1), '-', color = clist[2], alpha =1)
+plt.xlabel('Time (ms)')
+plt.ylabel('Location Variance')
+plt.gca().set_xlim([0,DelayTime-300])
+plt.gca().set_ylim([0,7])
+sns.despine()
+
     
 plt.rcParams["figure.figsize"] = (8,5.5)
 

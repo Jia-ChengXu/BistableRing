@@ -10,10 +10,17 @@ import timeit
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.optimize import curve_fit
-
-start = timeit.default_timer()
 sns.set(font_scale=2)
+plt.rcParams.update({
+    'font.size': 13,           # Base font size
+    'axes.titlesize': 13,      # Title
+    'axes.labelsize': 13,      # X/Y labels
+    'xtick.labelsize': 13,     # X tick labels
+    'ytick.labelsize': 13,     # Y tick labels
+    'legend.fontsize': 13,     # Legend
+})
+plt.rcParams["figure.figsize"] = (4,2.75)
+start = timeit.default_timer()
 sns.set_style("ticks")
 
 
@@ -37,7 +44,7 @@ def OneTimeStep(SynActi,state,Vden,VTotal,Rate, Noise):
     Vden = np.sum( state, axis = 1) * continousfactor * DenVol
     VTotalNow = inputrecord + Vden - inhpara * np.sum(Rate)/cont + Noise
     
-    VTotal += (VTotalNow-VTotal)/Cm
+    VTotal += (VTotalNow-VTotal)/Cm 
     Rate = np.copy(VTotal)
     Rate[VTotal < 0 ] = 0
     
@@ -64,12 +71,21 @@ continousfactor = 1.0/cont
 x = np.arange(0, 360.0, continousfactor)#must be 1.0 so not set to integer data
 z = np.arange(0, 360.0, continousfactor)
 
+#para used for approx linear input memory relation
+A= 0.5 #linear memory slope
+B= -0.6 #linear memory intercept
+kappa = 10*np.sqrt(2*np.pi) #calculated kappa constant by integration with current para set
 
 #weight========================================================================
 weight = np.zeros(( len(x), len(x) ))
 for xx in range(len(x)):
     dist = np.minimum( abs(x[xx]-z), 360-abs(x[xx]-z)  )
-    weight[ xx, :] = 18/(( dist+2)**2)
+    dist[dist>9] = 9.1
+    wtemp = np.exp(dist**2/200)*Tu*(1+inhpara*kappa)*A/(2*DenVol*dist*A  + 2*DenVol*dist/(1+inhpara*kappa)-B)
+    wtemp[wtemp==np.min(wtemp)] = 0.
+    #wtemp may not be monotonically decreasing, as mentioned in materials and methods, it is cut off
+    #after it stops monotonically decreasing. Here, it happens if the distance is beyond 9.
+    weight[ xx, :] = wtemp
 
 Simulations = 10
 condition = 3
@@ -84,9 +100,9 @@ NoiseStdList = []
 
 for ss in range(condition):
     
-    listofamp = [10,30,60]
+    listofamp = [10,15,20]
     A2 = listofamp[ss]
-    NoiseStd = 15 #2  10  15
+    NoiseStd = 3 #3 6 9
     NoiseStdList.append(NoiseStd)
     Noise = NoiseRaw * NoiseStd
     
@@ -131,26 +147,19 @@ for ss in range(condition):
 print( np.std(FitAll[2, :, -1,:], axis = 1) )
 
 
-colors = ['red', 'b','g', 'magenta', 'cyan', 'maroon', 'grey']
-plt.rcParams["figure.figsize"] = (8,2.5)
+colors = ['red', 'blue','orange', 'magenta', 'cyan', 'maroon', 'grey']
+plt.rcParams["figure.figsize"] = (4,1.25)
 for ss in range(condition): 
     plt.figure('Amp')
-    plt.plot(np.arange(0, DelayTime, 1),  FitAll[0, ss, EncodingTime:,:], '-', color = colors[ss], alpha = 0.3)
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Memory Amplitude')
-    plt.gca().set_xlim([0,DelayTime])
-    plt.gca().set_ylim([0,22])
+    plt.plot(np.arange(0, DelayTime-300, 1),  FitAll[0, ss, EncodingTime+300:,:], '-', color = colors[ss], alpha = 0.3)
+    plt.xlabel('Time (ms)' , labelpad=0)
+    #plt.ylabel('Memory amplitude')
+    plt.gca().set_xlim([0,DelayTime-300])
+    plt.gca().set_ylim([0,13])
     sns.despine()
 
 
-    plt.figure('Location')
-    plt.plot(np.arange(0, DelayTime, 1),  np.var(FitAll[2, ss, EncodingTime:,:], axis=1), '-', color = colors[ss],  alpha = 0.3)
-    plt.xlabel('Time (ms)')
-    plt.ylabel('Memory Location')
-    plt.gca().set_xlim([0,DelayTime])
-    plt.gca().set_ylim([0,25])
-    sns.despine()
-plt.rcParams["figure.figsize"] = (8,5.5)
+plt.rcParams["figure.figsize"] = (4,2.75)
     
 
 

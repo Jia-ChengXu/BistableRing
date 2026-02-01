@@ -3,7 +3,15 @@ import matplotlib.pyplot as plt
 import timeit
 import seaborn as sns
 start = timeit.default_timer()
-sns.set(font_scale=2)
+sns.set_context("notebook", font_scale=2)
+plt.rcParams.update({
+    'font.size': 13,           # Base font size
+    'axes.titlesize': 13,      # Title
+    'axes.labelsize': 13,      # X/Y labels
+    'xtick.labelsize': 13,     # X tick labels
+    'ytick.labelsize': 13,     # Y tick labels
+    'legend.fontsize': 13,     # Legend
+})
 sns.set_style("ticks")
 
 x =  [0.5, 0.5, 0.007, 0.014, 17.2, 0., 0.38, 48,    5.5, 0.54,  1., 8.6,  5.2, 20,  5, 0]
@@ -192,7 +200,7 @@ VIndenpendentSim[:, StiDen] = V_dList[:, StiDen]
 
 
 
-plt.rcParams["figure.figsize"] = (4,8)
+plt.rcParams["figure.figsize"] = (2,4.6)
 i=0
 colors = plt.rcParams["axes.prop_cycle"]()
 fig, axn = plt.subplots( NoOfDendrites, 1, sharex=True,sharey=True)
@@ -204,8 +212,8 @@ for ax in axn.flat:
     ax.set_ylim(bottom=-90, top=5)
     i = i + 1
 
-fig.text(-0.05, 0.5, 'Dendritic voltage (mv)', va='center',  fontsize = 18,rotation='vertical')
-plt.xlabel('Dendritic input frequency', fontsize=18, fontweight='light')
+#fig.text(-0.05, 0.5, 'Dendritic voltage (mv)', va='center',  fontsize = 13, rotation='vertical')
+#plt.xlabel('Synaptic input firing rate (Hz)')
 fig.tight_layout(pad=0)
 sns.despine()
 plt.rcParams["figure.figsize"] = (8,5.5)
