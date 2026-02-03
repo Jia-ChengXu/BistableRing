@@ -146,7 +146,7 @@ for ss in range(condition):
     plt.gca().set_ylim([0,22])
     sns.despine()
 
-    plt.figure('Location')
+    plt.figure('LocationVar')
     plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, ss, 300:,:], axis=1), '-', alpha =1)
     plt.xlabel('Time (ms)')
     plt.ylabel('Location variance')
@@ -195,3 +195,40 @@ for ss in range(3):
     sns.despine()
 
 plt.show()
+
+
+'''
+The default code generates 7A,B. To get 7C:
+1. change the weight section to
+weight = np.zeros(( len(x), len(x) ))
+for xx in range(len(x)):
+
+    signed_dist = (z - x[xx] + 180) % 360 - 180
+    dist = np.abs(signed_dist)
+
+    base_weight = 18 / ((dist + 2) ** 2)
+
+    # directional modulation
+    scale = np.ones_like(base_weight)
+    scale[signed_dist < 0] *= 1.05   # left side stronger
+    scale[signed_dist > 0] *= 0.95   # right side weaker
+
+    weight[xx, :] = base_weight * scale
+
+2. change 'condition = 11' to 'condition = 2'.
+
+3. change 'TuC  = TuF + 0.2*ss' and 'TdC  = TdF - 0.2*ss' to 'TuC  = TuF + 1.2*ss' and 'TdC  = TdF - 1.2*ss'
+
+
+
+run the following code to get 7C.
+plt.rcParams["figure.figsize"] = (4,2.75)
+plt.figure('Location')
+plt.plot(np.arange(0, DelayTime-300, 1),  abs(np.mean(FitAll[2, 0, 300:,:], axis=1)-180), '-', color = 'blue', alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  abs(np.mean(FitAll[2, 1, 300:,:], axis=1)-180), '-', color = 'green', alpha =1)
+plt.xlabel('Time (ms)')
+plt.ylabel('Location deviation')
+plt.gca().set_xlim([0,DelayTime-300])
+plt.gca().set_ylim([0,45])
+sns.despine()
+'''
