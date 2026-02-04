@@ -219,16 +219,14 @@ for xx in range(len(x)):
 
 3. change 'TuC  = TuF + 0.2*ss' and 'TdC  = TdF - 0.2*ss' to 'TuC  = TuF + 1.2*ss' and 'TdC  = TdF - 1.2*ss'
 
-
-
-run the following code to get 7C.
+4. run the following code to get 7C. (Note that the location plotted is substracted by a constant offset.)
 plt.rcParams["figure.figsize"] = (4,2.75)
 plt.figure('Location')
-plt.plot(np.arange(0, DelayTime-300, 1),  abs(np.mean(FitAll[2, 0, 300:,:], axis=1)-180), '-', color = 'blue', alpha =1)
-plt.plot(np.arange(0, DelayTime-300, 1),  abs(np.mean(FitAll[2, 1, 300:,:], axis=1)-180), '-', color = 'green', alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 0, 300:,:], axis=1)-185), '-', color = 'blue', alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 1, 300:,:], axis=1)-184), '-', color = 'green', alpha =1)
 plt.xlabel('Time (ms)')
 plt.ylabel('Location deviation')
 plt.gca().set_xlim([0,DelayTime-300])
-plt.gca().set_ylim([0,45])
+plt.gca().set_ylim([0,40])
 sns.despine()
 '''
