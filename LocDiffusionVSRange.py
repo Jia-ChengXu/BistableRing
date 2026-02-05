@@ -160,8 +160,8 @@ plt.rcParams["figure.figsize"] = (3.25,2.75)
 plt.figure('Range')
 plt.plot(BiRange,  np.var(FitAll[2, :, -1,:], axis=1)  , '.', color = 'black', alpha =1, clip_on=False, zorder=3)
 plt.plot(BiRange[0],  np.var(FitAll[2, :, -1,:], axis=1)[0]  , '.', color = 'blue', alpha =1, clip_on=False, zorder=3)
-plt.plot(BiRange[3],  np.var(FitAll[2, :, -1,:], axis=1)[3]  , '.', color = 'orange', alpha =1, clip_on=False, zorder=3)
-plt.plot(BiRange[6],  np.var(FitAll[2, :, -1,:], axis=1)[6]  , '.', color = 'green', alpha =1, clip_on=False, zorder=3)
+plt.plot(BiRange[4],  np.var(FitAll[2, :, -1,:], axis=1)[4]  , '.', color = 'orange', alpha =1, clip_on=False, zorder=3)
+plt.plot(BiRange[8],  np.var(FitAll[2, :, -1,:], axis=1)[8]  , '.', color = 'green', alpha =1, clip_on=False, zorder=3)
 
 
 
@@ -187,7 +187,7 @@ colors = ['blue', 'orange','green']
 for ss in range(3): 
 
     plt.figure(4)
-    plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, ss*3, 300:,:], axis=1), '-', color = colors[ss], alpha =1)
+    plt.plot(np.arange(0, DelayTime-300, 1),  np.var(FitAll[2, ss*4, 300:,:], axis=1), '-', color = colors[ss], alpha =1 , clip_on=False, zorder=3)
     plt.xlabel('Time (ms)')
     plt.ylabel('Location variance')
     plt.gca().set_xlim([0,DelayTime-300])
@@ -217,13 +217,13 @@ for xx in range(len(x)):
 
 2. change 'condition = 11' to 'condition = 2'.
 
-3. change 'TuC  = TuF + 0.2*ss' and 'TdC  = TdF - 0.2*ss' to 'TuC  = TuF + 1.2*ss' and 'TdC  = TdF - 1.2*ss'
+3. change 'TuC  = TuF + 0.2*ss' and 'TdC  = TdF - 0.2*ss' to 'TuC  = TuF + 1.6*ss' and 'TdC  = TdF - 1.6*ss'
 
 4. run the following code to get 7C. (Note that the location plotted is substracted by a constant offset.)
 plt.rcParams["figure.figsize"] = (4,2.75)
 plt.figure('Location')
-plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 0, 300:,:], axis=1)-185), '-', color = 'blue', alpha =1)
-plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 1, 300:,:], axis=1)-184), '-', color = 'green', alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 0, 300:,:], axis=1)-183), '-', color = 'blue', alpha =1)
+plt.plot(np.arange(0, DelayTime-300, 1),  (np.mean(FitAll[2, 1, 300:,:], axis=1)-182), '-', color = 'green', alpha =1)
 plt.xlabel('Time (ms)')
 plt.ylabel('Location deviation')
 plt.gca().set_xlim([0,DelayTime-300])
